@@ -364,20 +364,20 @@ Com 15 workers e ~84s/request, a taxa efetiva é ~0.18 req/s (10.7 RPM) — dent
 | `mimo-v2.5` | 2 | 400 | 381 | 95.3% |
 | `nemotron-ultra-550b` | 0 | — | — | descartado (ver seção de modelos descartados) |
 
-**Última atualização: 2026-06-18 ~17h**
+**Última atualização: 2026-06-18 17h50**
 
 | Modelo | Rodadas concluídas | Amostras | Válidas | Taxa |
 |---|---|---|---|---|
-| `llama-4-maverick` | 3/5 | 600 | 597 | 99.5% |
-| `deepseek-v4-flash` | 3/5 | 600 | 590 | 98.3% |
-| `qwen3.7-max` | 3/5 | 600 | 584 | 97.3% |
-| `mimo-v2.5` | 3/5 | 600 | 581 | 96.8% |
-| `minimax-m3` | 2/5 + R3 em andamento | 400 | 381 | 95.2% |
+| `llama-4-maverick` | 4/5 + R5 em andamento | 800 | 797 | 99.6% |
+| `deepseek-v4-flash` | 4/5 + R5 em andamento | 800 | 790 | 98.8% |
+| `qwen3.7-max` | 4/5 + R5 em andamento | 800 | 784 | 98.0% |
+| `mimo-v2.5` | 4/5 + R5 em andamento | 800 | 779 | 97.4% |
+| `minimax-m3` | 4/5 + R5 em andamento | 800 | 779 | 97.4% |
 | `nemotron-ultra-550b` | 0 | — | — | descartado |
 
-Runner ativo, rodadas 4 e 5 pendentes. Nenhum modelo excluído (todos acima de 80% de válidos).
+Rodada 5 iniciada às 17:43. Nenhum modelo excluído pelo runner (todos consistentemente acima de 95% de válidos). Ao término da rodada 5, cada modelo terá **1000 amostras** (5 × 200, seeds diferentes).
 
-**Nota sobre a rodada 1:** latências anormalmente altas (deepseek 334s/snippet, qwen3.7 448s/snippet, minimax 588s/snippet) indicam instabilidade de rede geral no período 08h–15h. As rodadas 2 e 3 voltaram ao normal (deepseek ~8-9s, qwen3.7 ~24s, mimo ~22s), confirmando que os dados da rodada 1 são válidos mas ruidosos em `elapsed_s` — predições e conteúdo não foram afetados. Minimax apresenta erros de rede recorrentes mesmo nas rodadas normais, mas o retry automático absorve e completa os 200 snippets.
+**Nota sobre a rodada 1:** latências anormalmente altas (deepseek 334s/snippet, qwen3.7 448s/snippet, minimax 588s/snippet) indicam instabilidade de rede geral no período 08h–15h. As rodadas 2–5 voltaram ao normal (deepseek ~8s, qwen3.7 ~24s, mimo ~22s, llama ~2.5s), confirmando que os dados da rodada 1 são válidos — predições e conteúdo não foram afetados, apenas `elapsed_s` está inflado nessa rodada. Minimax apresenta erros de rede recorrentes (ConnectionReset) mas o retry automático (até 5×) absorve e completa todos os 200 snippets.
 
 ---
 

@@ -234,3 +234,89 @@
 2026-06-18 16:58:44,038 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
 2026-06-18 16:58:44,038 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
 2026-06-18 17:02:34,088 [INFO] __main__ — Salvo: minimax-m3_20260618_154204_zero_shot.csv  |  total=4820.2s  media/amostra=120.2s  min=4.8s  max=4200.3s  validos=199/200
+2026-06-18 17:02:36,322 [INFO] __main__ — Carregando dataset isThisYouLLM/H-AIRosettaMP...
+2026-06-18 17:02:36,953 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-06-18 17:02:36,981 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/isThisYouLLM/H-AIRosettaMP/2bd3dc134a28b269c48bff1ee5977030f36875f3/README.md "HTTP/1.1 200 OK"
+2026-06-18 17:02:37,135 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 17:02:37,136 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-06-18 17:02:37,690 [INFO] httpx — HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/isThisYouLLM/H-AIRosettaMP/isThisYouLLM/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 17:02:38,128 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/revision/2bd3dc134a28b269c48bff1ee5977030f36875f3 "HTTP/1.1 200 OK"
+2026-06-18 17:02:38,275 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/.huggingface.yaml "HTTP/1.1 404 Not Found"
+2026-06-18 17:02:38,559 [INFO] httpx — HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=isThisYouLLM/H-AIRosettaMP "HTTP/1.1 200 OK"
+2026-06-18 17:02:38,725 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3/data?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-06-18 17:02:38,911 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3?recursive=false&expand=false "HTTP/1.1 200 OK"
+2026-06-18 17:02:39,072 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/dataset_infos.json "HTTP/1.1 404 Not Found"
+2026-06-18 17:02:39,582 [INFO] __main__ — Pronto: 200 snippets (seed=1781812955)
+2026-06-18 17:02:39,621 [INFO] __main__ — === MODO FULL — 200 snippets, seed=1781812955, run_id=20260618_170235 ===
+2026-06-18 17:02:39,621 [INFO] __main__ — Modelos ignorados (SKIP_MODELS): ['nemotron-ultra-550b']
+2026-06-18 17:02:39,621 [INFO] __main__ — Rodando 5 modelo(s) em paralelo...
+2026-06-18 17:02:39,621 [INFO] __main__ — Iniciando: minimax-m3  [openrouter / minimax/minimax-m3]
+2026-06-18 17:02:39,624 [INFO] __main__ — Iniciando: deepseek-v4-flash  [openrouter / deepseek/deepseek-v4-flash]
+2026-06-18 17:02:39,627 [INFO] __main__ — Iniciando: qwen3.7-max  [openrouter / qwen/qwen3.7-max]
+2026-06-18 17:02:39,632 [INFO] __main__ — Iniciando: llama-4-maverick  [openrouter / meta-llama/llama-4-maverick]
+2026-06-18 17:02:39,635 [INFO] __main__ — Iniciando: mimo-v2.5  [openrouter / xiaomi/mimo-v2.5]
+2026-06-18 17:06:00,755 [INFO] __main__ — Salvo: llama-4-maverick_20260618_170235_zero_shot.csv  |  total=201.1s  media/amostra=2.2s  min=1.5s  max=7.0s  validos=200/200
+2026-06-18 17:08:49,039 [INFO] __main__ — Salvo: qwen3.7-max_20260618_170235_zero_shot.csv  |  total=369.4s  media/amostra=25.0s  min=9.9s  max=49.5s  validos=200/200
+2026-06-18 17:08:58,982 [INFO] __main__ — Salvo: mimo-v2.5_20260618_170235_zero_shot.csv  |  total=379.3s  media/amostra=26.6s  min=10.1s  max=211.2s  validos=198/200
+2026-06-18 17:09:01,479 [INFO] __main__ — Salvo: deepseek-v4-flash_20260618_170235_zero_shot.csv  |  total=381.8s  media/amostra=9.1s  min=2.8s  max=36.4s  validos=200/200
+2026-06-18 17:39:14,129 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 17:41:13,389 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 17:41:13,390 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 17:41:13,405 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 17:43:07,751 [INFO] __main__ — Salvo: minimax-m3_20260618_170235_zero_shot.csv  |  total=2428.1s  media/amostra=60.2s  min=3.6s  max=1899.6s  validos=199/200
+2026-06-18 17:43:18,482 [INFO] __main__ — Carregando dataset isThisYouLLM/H-AIRosettaMP...
+2026-06-18 17:43:19,059 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-06-18 17:43:19,089 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/isThisYouLLM/H-AIRosettaMP/2bd3dc134a28b269c48bff1ee5977030f36875f3/README.md "HTTP/1.1 200 OK"
+2026-06-18 17:43:19,261 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 17:43:19,867 [INFO] httpx — HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/isThisYouLLM/H-AIRosettaMP/isThisYouLLM/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 17:43:20,052 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/revision/2bd3dc134a28b269c48bff1ee5977030f36875f3 "HTTP/1.1 200 OK"
+2026-06-18 17:43:20,202 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/.huggingface.yaml "HTTP/1.1 404 Not Found"
+2026-06-18 17:43:20,203 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-06-18 17:43:20,504 [INFO] httpx — HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=isThisYouLLM/H-AIRosettaMP "HTTP/1.1 200 OK"
+2026-06-18 17:43:20,758 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3/data?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-06-18 17:43:20,916 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3?recursive=false&expand=false "HTTP/1.1 200 OK"
+2026-06-18 17:43:21,080 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/dataset_infos.json "HTTP/1.1 404 Not Found"
+2026-06-18 17:43:22,421 [INFO] __main__ — Pronto: 200 snippets (seed=1781815394)
+2026-06-18 17:43:22,449 [INFO] __main__ — === MODO FULL — 200 snippets, seed=1781815394, run_id=20260618_174314 ===
+2026-06-18 17:43:22,449 [INFO] __main__ — Modelos ignorados (SKIP_MODELS): ['nemotron-ultra-550b']
+2026-06-18 17:43:22,449 [INFO] __main__ — Rodando 5 modelo(s) em paralelo...
+2026-06-18 17:43:22,450 [INFO] __main__ — Iniciando: minimax-m3  [openrouter / minimax/minimax-m3]
+2026-06-18 17:43:22,452 [INFO] __main__ — Iniciando: deepseek-v4-flash  [openrouter / deepseek/deepseek-v4-flash]
+2026-06-18 17:43:22,456 [INFO] __main__ — Iniciando: qwen3.7-max  [openrouter / qwen/qwen3.7-max]
+2026-06-18 17:43:22,459 [INFO] __main__ — Iniciando: llama-4-maverick  [openrouter / meta-llama/llama-4-maverick]
+2026-06-18 17:43:22,462 [INFO] __main__ — Iniciando: mimo-v2.5  [openrouter / xiaomi/mimo-v2.5]
+2026-06-18 17:46:43,323 [INFO] __main__ — Salvo: llama-4-maverick_20260618_174314_zero_shot.csv  |  total=200.8s  media/amostra=2.1s  min=1.4s  max=4.9s  validos=197/200
+2026-06-18 17:48:49,604 [INFO] __main__ — Salvo: mimo-v2.5_20260618_174314_zero_shot.csv  |  total=327.1s  media/amostra=22.1s  min=9.7s  max=82.0s  validos=200/200
+2026-06-18 17:49:12,305 [INFO] __main__ — Salvo: qwen3.7-max_20260618_174314_zero_shot.csv  |  total=349.8s  media/amostra=24.2s  min=6.7s  max=48.4s  validos=199/200
+2026-06-18 17:49:14,199 [INFO] __main__ — Salvo: deepseek-v4-flash_20260618_174314_zero_shot.csv  |  total=351.7s  media/amostra=8.2s  min=2.8s  max=42.4s  validos=200/200
+2026-06-18 18:11:53,595 [INFO] __main__ — Salvo: minimax-m3_20260618_174314_zero_shot.csv  |  total=1711.1s  media/amostra=42.3s  min=20.1s  max=370.4s  validos=198/200
+2026-06-18 18:11:55,892 [INFO] __main__ — Carregando dataset isThisYouLLM/H-AIRosettaMP...
+2026-06-18 18:11:56,420 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-06-18 18:11:56,422 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-06-18 18:11:56,447 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/isThisYouLLM/H-AIRosettaMP/2bd3dc134a28b269c48bff1ee5977030f36875f3/README.md "HTTP/1.1 200 OK"
+2026-06-18 18:11:56,600 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 18:11:57,129 [INFO] httpx — HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/isThisYouLLM/H-AIRosettaMP/isThisYouLLM/H-AIRosettaMP.py "HTTP/1.1 404 Not Found"
+2026-06-18 18:11:57,313 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/revision/2bd3dc134a28b269c48bff1ee5977030f36875f3 "HTTP/1.1 200 OK"
+2026-06-18 18:11:57,466 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/.huggingface.yaml "HTTP/1.1 404 Not Found"
+2026-06-18 18:11:57,753 [INFO] httpx — HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=isThisYouLLM/H-AIRosettaMP "HTTP/1.1 200 OK"
+2026-06-18 18:11:57,919 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3/data?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-06-18 18:11:58,069 [INFO] httpx — HTTP Request: GET https://huggingface.co/api/datasets/isThisYouLLM/H-AIRosettaMP/tree/2bd3dc134a28b269c48bff1ee5977030f36875f3?recursive=false&expand=false "HTTP/1.1 200 OK"
+2026-06-18 18:11:58,228 [INFO] httpx — HTTP Request: HEAD https://huggingface.co/datasets/isThisYouLLM/H-AIRosettaMP/resolve/2bd3dc134a28b269c48bff1ee5977030f36875f3/dataset_infos.json "HTTP/1.1 404 Not Found"
+2026-06-18 18:11:58,863 [INFO] __main__ — Pronto: 200 snippets (seed=1781817114)
+2026-06-18 18:11:58,898 [INFO] __main__ — === MODO FULL — 200 snippets, seed=1781817114, run_id=20260618_181154 ===
+2026-06-18 18:11:58,898 [INFO] __main__ — Modelos ignorados (SKIP_MODELS): ['nemotron-ultra-550b']
+2026-06-18 18:11:58,898 [INFO] __main__ — Rodando 5 modelo(s) em paralelo...
+2026-06-18 18:11:58,899 [INFO] __main__ — Iniciando: minimax-m3  [openrouter / minimax/minimax-m3]
+2026-06-18 18:11:58,901 [INFO] __main__ — Iniciando: deepseek-v4-flash  [openrouter / deepseek/deepseek-v4-flash]
+2026-06-18 18:11:58,906 [INFO] __main__ — Iniciando: qwen3.7-max  [openrouter / qwen/qwen3.7-max]
+2026-06-18 18:11:58,911 [INFO] __main__ — Iniciando: llama-4-maverick  [openrouter / meta-llama/llama-4-maverick]
+2026-06-18 18:11:58,915 [INFO] __main__ — Iniciando: mimo-v2.5  [openrouter / xiaomi/mimo-v2.5]
+2026-06-18 18:15:23,133 [INFO] __main__ — Salvo: llama-4-maverick_20260618_181154_zero_shot.csv  |  total=204.2s  media/amostra=2.3s  min=1.3s  max=11.8s  validos=198/200
+2026-06-18 18:17:05,321 [INFO] __main__ — Salvo: deepseek-v4-flash_20260618_181154_zero_shot.csv  |  total=306.4s  media/amostra=7.1s  min=2.4s  max=85.8s  validos=200/200
+2026-06-18 18:17:31,272 [INFO] __main__ — Salvo: qwen3.7-max_20260618_181154_zero_shot.csv  |  total=332.4s  media/amostra=23.0s  min=6.8s  max=57.2s  validos=200/200
+2026-06-18 18:17:51,340 [INFO] __main__ — Salvo: mimo-v2.5_20260618_181154_zero_shot.csv  |  total=352.4s  media/amostra=24.5s  min=10.2s  max=178.1s  validos=199/200
+2026-06-18 18:52:08,850 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 18:52:08,867 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 18:52:08,867 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 18:52:08,869 [WARNING] __main__ — [minimax-m3] Erro de rede — aguardando 10s...
+2026-06-18 18:59:15,800 [INFO] __main__ — Salvo: minimax-m3_20260618_181154_zero_shot.csv  |  total=2836.9s  media/amostra=70.7s  min=4.7s  max=2033.9s  validos=199/200
