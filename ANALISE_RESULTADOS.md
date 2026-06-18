@@ -1,9 +1,10 @@
 # Análise de Resultados — Benchmark de Detecção de Código AI vs Humano
 
 **Data:** 2026-06-18
-**Base:** 4 rodadas full, ~800–990 amostras por modelo, seed diferente a cada rodada
+**Base:** 6 rodadas full, ~1.200 amostras por modelo (seed diferente a cada rodada)
 **Modelos:** minimax-m3, deepseek-v4-flash, mimo-v2.5, qwen3.7-max, llama-4-maverick
 **Dataset:** `isThisYouLLM/H-AIRosettaMP` — Python e C, balanceado 50% AI / 50% humano
+**Total:** 6.000 amostras, 5.919 predições válidas
 
 ---
 
@@ -11,11 +12,11 @@
 
 | Modelo | Acc | Precisão | Recall | F1 | n válidas |
 |---|---|---|---|---|---|
-| **qwen3.7-max** | **0.562** | 0.645 | 0.244 | 0.354 | 983 |
-| llama-4-maverick | 0.533 | **0.642** | 0.141 | 0.232 | 994 |
-| deepseek-v4-flash | 0.528 | 0.530 | 0.501 | 0.515 | 990 |
-| mimo-v2.5 | 0.527 | 0.530 | **0.570** | **0.549** | 979 |
-| minimax-m3 | 0.522 | 0.561 | 0.235 | 0.331 | 779 |
+| **qwen3.7-max** | **0.558** | **0.645** | 0.233 | 0.342 | 1.183 |
+| deepseek-v4-flash | 0.534 | 0.536 | 0.501 | **0.518** | 1.190 |
+| llama-4-maverick | 0.529 | 0.623 | 0.136 | 0.224 | 1.192 |
+| minimax-m3 | 0.526 | 0.566 | 0.232 | 0.329 | 1.176 |
+| mimo-v2.5 | 0.525 | 0.528 | **0.561** | **0.544** | 1.178 |
 
 > Todos os modelos ficam entre 52–56% em uma tarefa binária onde o acaso daria 50%. A tarefa de detecção de autoria de código zero-shot está no limiar do acaso para todos os modelos testados.
 
@@ -27,11 +28,11 @@ O dataset é balanceado (~50% AI, ~50% humano), mas a distribuição de prediç�
 
 | Modelo | Prediz AI | Prediz Human |
 |---|---|---|
-| llama-4-maverick | **11.0%** | 89.0% |
-| qwen3.7-max | 18.6% | 81.4% |
-| minimax-m3 | 21.1% | 78.9% |
-| deepseek-v4-flash | 47.3% | 52.7% |
-| mimo-v2.5 | **54.3%** | 45.7% |
+| llama-4-maverick | **10.9%** | 89.1% |
+| qwen3.7-max | 17.8% | 82.2% |
+| minimax-m3 | 20.6% | 79.4% |
+| deepseek-v4-flash | 46.7% | 53.3% |
+| mimo-v2.5 | **53.7%** | 46.3% |
 
 **Interpretação:** O prompt instrui os modelos a buscar *fingerprints humanos* e só classificar como AI na ausência deles. Isso cria um viés de confirmação: ao não encontrar evidências humanas claras, a maioria dos modelos ainda opta por `human` em vez de `ai`. Mimo é o único que vai na direção oposta — ligeiramente mais desconfiado.
 
@@ -41,11 +42,11 @@ O dataset é balanceado (~50% AI, ~50% humano), mas a distribuição de prediç�
 
 | Modelo | Acerto em código AI | Acerto em código humano |
 |---|---|---|
-| mimo-v2.5 | **57.0%** | 48.3% |
-| deepseek-v4-flash | 50.1% | 55.6% |
-| qwen3.7-max | 24.4% | **87.0%** |
-| minimax-m3 | 23.5% | 81.4% |
-| llama-4-maverick | **14.1%** | **92.2%** |
+| mimo-v2.5 | **56.1%** | 48.9% |
+| deepseek-v4-flash | 50.1% | 56.6% |
+| qwen3.7-max | 23.3% | **86.9%** |
+| minimax-m3 | 23.2% | 81.9% |
+| llama-4-maverick | **13.6%** | **91.8%** |
 
 **Padrão emergente — dois perfis opostos:**
 
@@ -58,11 +59,11 @@ O dataset é balanceado (~50% AI, ~50% humano), mas a distribuição de prediç�
 
 | Modelo | TP | FP | TN | FN | FPR | FNR |
 |---|---|---|---|---|---|---|
-| mimo-v2.5 | 282 | 250 | 234 | 213 | **51.7%** | 43.0% |
-| deepseek-v4-flash | 248 | 220 | 275 | 247 | 44.4% | 49.9% |
-| minimax-m3 | 92 | 72 | 315 | 300 | 18.6% | **76.5%** |
-| qwen3.7-max | 118 | 65 | 434 | 366 | 13.0% | 75.6% |
-| llama-4-maverick | 70 | 39 | 460 | 425 | **7.8%** | **85.9%** |
+| mimo-v2.5 | 334 | 298 | 285 | 261 | **51.1%** | 43.9% |
+| deepseek-v4-flash | 298 | 258 | 337 | 297 | 43.4% | 49.9% |
+| minimax-m3 | 137 | 105 | 481 | 453 | 17.9% | **76.8%** |
+| qwen3.7-max | 136 | 75 | 524 | 448 | 12.5% | 76.7% |
+| llama-4-maverick | 81 | 49 | 549 | 513 | **8.2%** | **86.4%** |
 
 > **FPR** = taxa de código humano classificado erroneamente como AI ("acusação indevida")
 > **FNR** = taxa de código AI classificado erroneamente como humano ("AI que passa despercebido")
@@ -80,10 +81,10 @@ O dataset é balanceado (~50% AI, ~50% humano), mas a distribuição de prediç�
 | Modelo | Conf. média | Conf. acertos | Conf. erros | Diferença |
 |---|---|---|---|---|
 | qwen3.7-max | **8.13** | 8.2 | 8.1 | 0.1 |
-| minimax-m3 | 7.35 | 7.4 | 7.3 | 0.1 |
-| llama-4-maverick | 7.32 | 7.4 | 7.2 | 0.2 |
-| deepseek-v4-flash | 7.13 | 7.1 | 7.1 | 0.0 |
-| mimo-v2.5 | 7.08 | 7.1 | 7.1 | 0.0 |
+| minimax-m3 | 7.50 | 7.5 | 7.3 | 0.2 |
+| llama-4-maverick | 7.46 | 7.5 | 7.2 | 0.3 |
+| deepseek-v4-flash | 7.14 | 7.1 | 7.1 | 0.0 |
+| mimo-v2.5 | 7.07 | 7.1 | 7.1 | 0.0 |
 
 **Achado crítico: a confiança não está calibrada em nenhum modelo.** A diferença de confiança entre acertos e erros é de 0.0 a 0.2 pontos — estatisticamente insignificante. Os modelos erram com a mesma certeza com que acertam.
 
@@ -97,11 +98,11 @@ Consequência: o campo `confidence` do JSON de resposta **não pode ser usado co
 
 | Modelo | Acc Python | Acc C | Diferença (C - Python) |
 |---|---|---|---|
-| qwen3.7-max | 0.526 | **0.598** | +0.072 |
-| deepseek-v4-flash | 0.497 | 0.560 | +0.063 |
-| mimo-v2.5 | 0.509 | 0.545 | +0.036 |
-| minimax-m3 | 0.508 | 0.538 | +0.030 |
-| llama-4-maverick | **0.553** | 0.514 | −0.039 |
+| qwen3.7-max | 0.523 | **0.593** | +0.070 |
+| deepseek-v4-flash | 0.501 | 0.566 | +0.065 |
+| mimo-v2.5 | 0.506 | 0.545 | +0.039 |
+| minimax-m3 | 0.512 | 0.540 | +0.028 |
+| llama-4-maverick | **0.540** | 0.518 | −0.022 |
 
 4 de 5 modelos performam melhor em C do que Python. Apenas llama tem resultado invertido.
 
