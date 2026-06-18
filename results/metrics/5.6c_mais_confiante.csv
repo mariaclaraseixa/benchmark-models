@@ -1,0 +1,2 @@
+ensemble,precision,recall,f1,accuracy,mcc,auc,n
+mais_confiante,1.0,0.01,0.019801980198019802,0.505,0.0708881205008336,0.54505,200

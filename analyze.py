@@ -22,9 +22,14 @@ LANGUAGES e SAMPLES_PER_CLASS_PER_LANG para que os IDs dos snippets
 coincidam com a analise de tamanho e complexidade.
 """
 
+import io
 import logging
 import sys
 import warnings
+
+# garante UTF-8 no stdout mesmo em terminais Windows (cp1252)
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 
 import numpy as np
@@ -56,9 +61,9 @@ LINE_QUARTILES = [
     ("Q4\n(52+)",    52, None),
 ]
 WORD_QUARTILES = [
-    ("Q1\n(≤46)",      0,   46),
-    ("Q2\n(47–102)",  47,  102),
-    ("Q3\n(103–196)", 103, 196),
+    ("Q1\n(<=46)",     0,   46),
+    ("Q2\n(47-102)",  47,  102),
+    ("Q3\n(103-196)", 103, 196),
     ("Q4\n(197+)",   197, None),
 ]
 COMPLEXITY_BINS = [
@@ -87,13 +92,16 @@ def _metrics(df: pd.DataFrame) -> dict:
         return dict(precision=_nan, recall=_nan, f1=_nan, accuracy=_nan, mcc=_nan, auc=_nan, n=0)
     y_true = (v["true_label"] == "ai").astype(int)
     y_pred = (v["prediction"] == "ai").astype(int)
-    v["ai_score"] = v.apply(
-        lambda r: r["confidence"] / 10 if r["prediction"] == "ai" else 1.0 - r["confidence"] / 10,
-        axis=1,
-    )
-    try:
-        auc = roc_auc_score(y_true, v["ai_score"]) if y_true.nunique() > 1 else _nan
-    except Exception:
+    if "confidence" in v.columns:
+        v["ai_score"] = v.apply(
+            lambda r: r["confidence"] / 10 if r["prediction"] == "ai" else 1.0 - r["confidence"] / 10,
+            axis=1,
+        )
+        try:
+            auc = roc_auc_score(y_true, v["ai_score"]) if y_true.nunique() > 1 else _nan
+        except Exception:
+            auc = _nan
+    else:
         auc = _nan
     return dict(
         precision=precision_score(y_true, y_pred, zero_division=0),
