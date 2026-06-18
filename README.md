@@ -364,20 +364,22 @@ Com 15 workers e ~84s/request, a taxa efetiva é ~0.18 req/s (10.7 RPM) — dent
 | `mimo-v2.5` | 2 | 400 | 381 | 95.3% |
 | `nemotron-ultra-550b` | 0 | — | — | descartado (ver seção de modelos descartados) |
 
-**Última atualização: 2026-06-18 17h50**
+**Execução finalizada — 2026-06-18 19h**
 
-| Modelo | Rodadas concluídas | Amostras | Válidas | Taxa |
-|---|---|---|---|---|
-| `llama-4-maverick` | 4/5 + R5 em andamento | 800 | 797 | 99.6% |
-| `deepseek-v4-flash` | 4/5 + R5 em andamento | 800 | 790 | 98.8% |
-| `qwen3.7-max` | 4/5 + R5 em andamento | 800 | 784 | 98.0% |
-| `mimo-v2.5` | 4/5 + R5 em andamento | 800 | 779 | 97.4% |
-| `minimax-m3` | 4/5 + R5 em andamento | 800 | 779 | 97.4% |
-| `nemotron-ultra-550b` | 0 | — | — | descartado |
+| Modelo | Rodadas | Amostras | Válidas | Acc | F1 |
+|---|---|---|---|---|---|
+| `qwen3.7-max` | 6 | 1.200 | 1.183 | **0.558** | 0.342 |
+| `deepseek-v4-flash` | 6 | 1.200 | 1.190 | 0.534 | **0.518** |
+| `llama-4-maverick` | 6 | 1.200 | 1.192 | 0.529 | 0.224 |
+| `minimax-m3` | 6 | 1.200 | 1.176 | 0.526 | 0.329 |
+| `mimo-v2.5` | 6 | 1.200 | 1.178 | 0.525 | **0.544** |
+| `nemotron-ultra-550b` | 0 | — | — | — | descartado |
 
-Rodada 5 iniciada às 17:43. Nenhum modelo excluído pelo runner (todos consistentemente acima de 95% de válidos). Ao término da rodada 5, cada modelo terá **1000 amostras** (5 × 200, seeds diferentes).
+**Total: 6.000 amostras, 5.919 predições válidas.** Nenhum modelo excluído (todos >97% válidos em todas as rodadas).
 
-**Nota sobre a rodada 1:** latências anormalmente altas (deepseek 334s/snippet, qwen3.7 448s/snippet, minimax 588s/snippet) indicam instabilidade de rede geral no período 08h–15h. As rodadas 2–5 voltaram ao normal (deepseek ~8s, qwen3.7 ~24s, mimo ~22s, llama ~2.5s), confirmando que os dados da rodada 1 são válidos — predições e conteúdo não foram afetados, apenas `elapsed_s` está inflado nessa rodada. Minimax apresenta erros de rede recorrentes (ConnectionReset) mas o retry automático (até 5×) absorve e completa todos os 200 snippets.
+Análise completa em [ANALISE_RESULTADOS.md](ANALISE_RESULTADOS.md). Snippets mais confusos em [SNIPPETS_CONFUSOS.md](SNIPPETS_CONFUSOS.md).
+
+**Nota sobre a rodada 1:** latências anormalmente altas (deepseek 334s/snippet, qwen3.7 448s/snippet, minimax 588s/snippet) indicam instabilidade de rede geral no período 08h–15h. As rodadas 2–6 voltaram ao normal (deepseek ~8s, qwen3.7 ~24s, mimo ~22s, llama ~2.5s) — predições e conteúdo da rodada 1 não foram afetados, apenas `elapsed_s` está inflado.
 
 ---
 
