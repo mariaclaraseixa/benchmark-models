@@ -1,0 +1,6 @@
+id,language,true_label,model,strategy,prediction,confidence,explanation,elapsed_s
+0,Python,ai,deepseek-v4-flash,zero_shot,human,8,"Contains version annotation (# version 1.2.0) and idiosyncratic comment style using # instead of //, indicating human authorship.",11.67
+1,C,human,deepseek-v4-flash,zero_shot,human,8,"The comments contain the typo ""unitialized"" instead of ""uninitialized"", a common human oversight that signals informal authorship.",10.04
+2,C,ai,deepseek-v4-flash,zero_shot,human,8,"Contains a syntax error (mismatched parentheses in the ternary on line 10) and messy logic with global variables, which are typical human mistakes and lack the syntactic perfection of AI-generated code.",13.78
+3,Python,human,deepseek-v4-flash,zero_shot,ai,7,"No human fingerprints were found; the code is clean, lacks comments, and follows a consistent algorithmic style without personal idiosyncrasies or debugging artifacts.",34.1
+4,C,human,deepseek-v4-flash,zero_shot,human,6,"The comment about strftime's locale dependency and the use of (void) casts before printf suggest a human author with awareness of C idioms and potential pitfalls, though these are weak fingerprints.",18.89

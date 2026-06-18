@@ -37,12 +37,52 @@ MODELS = {
         "api_key_env": "MODEL2_API_KEY",
         "reasoning": True,
     },
-    "tencent-hy3-preview": {
+    "qwen3.7-max": {
         "provider": "openrouter",
-        "model_id": "tencent/hy3-preview",
+        "model_id": "qwen/qwen3.7-max",
         "rpm": 60,
-        "api_key_env": "MODEL3_API_KEY",
+        "api_key_env": "MODEL4_API_KEY",
         "reasoning": True,
+        "workers": 15,
+    },
+    "llama-4-maverick": {
+        "provider": "openrouter",
+        "model_id": "meta-llama/llama-4-maverick",
+        "rpm": 60,
+        "api_key_env": "MODEL6_API_KEY",
+        "reasoning": False,
+        "workers": 5,
+    },
+    "nemotron-ultra-550b": {
+        "provider": "openrouter",
+        "model_id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "rpm": 20,           # tier :free tem limite menor
+        "api_key_env": "MODEL5_API_KEY",
+        "reasoning": True,
+        "workers": 5,
+    },
+    # "qwen-2.5-coder-32b": {   # candidato — especializado em código, sem reasoning (ver README — Modelos candidatos)
+    #     "provider": "openrouter",
+    #     "model_id": "qwen/qwen-2.5-coder-32b-instruct",
+    #     "rpm": 60,
+    #     "api_key_env": "MODEL7_API_KEY",
+    #     "reasoning": False,
+    #     "workers": 5,
+    # },
+    # "tencent-hy3-preview": {  # desabilitado — ConnectionReset + KeyError 'choices' (ver README #4)
+    #     "provider": "openrouter",
+    #     "model_id": "tencent/hy3-preview",
+    #     "rpm": 60,
+    #     "api_key_env": "MODEL3_API_KEY",
+    #     "reasoning": True,
+    # },
+    "mimo-v2.5": {
+        "provider": "openrouter",
+        "model_id": "xiaomi/mimo-v2.5",
+        "rpm": 60,
+        "api_key_env": "MIMO_API_KEY",
+        "reasoning": True,
+        "workers": 15,
     },
     #
     # --- OpenAI ---
@@ -76,6 +116,9 @@ MODELS = {
 #              para acumular dados. Resultados em {modelo}_{id}_zero_shot.csv
 # ----------------------------------------------------------------
 RUN_MODE = "full"
+
+# Modelos a excluir de rodadas subsequentes — atualizado automaticamente pelo runner.py
+SKIP_MODELS: list = ["nemotron-ultra-550b"]
 
 # Dataset (mesmo do experimento original)
 DATASET_NAME        = "isThisYouLLM/H-AIRosettaMP"
@@ -420,7 +463,7 @@ def _run_model(df: pd.DataFrame, model_name: str, cfg: dict) -> list:
             "elapsed_s": round(elapsed, 2),
         }
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
+    with ThreadPoolExecutor(max_workers=cfg.get("workers", MAX_WORKERS)) as ex:
         futures = {ex.submit(process, i, row): i for i, row in enumerate(rows)}
         with tqdm(total=len(rows), desc=model_name, unit="snippet") as pbar:
             for future in as_completed(futures):
@@ -467,7 +510,6 @@ def main():
         suffix = "sanity"
         df     = _load_data(cap=5, seed=seed)
         logger.info("=== MODO SANITY — %d snippets por modelo ===", len(df))
-        # sanity sempre re-executa (sem skip)
         pending = dict(MODELS)
 
     elif RUN_MODE == "full":
@@ -476,8 +518,9 @@ def main():
         suffix  = f"{run_id}_zero_shot"
         df      = _load_data(seed=seed)
         logger.info("=== MODO FULL — %d snippets, seed=%d, run_id=%s ===", len(df), seed, run_id)
-        # full nunca pula: cada run tem suffix unico com timestamp
-        pending = dict(MODELS)
+        pending = {k: v for k, v in MODELS.items() if k not in SKIP_MODELS}
+        if SKIP_MODELS:
+            logger.info("Modelos ignorados (SKIP_MODELS): %s", SKIP_MODELS)
 
     else:
         print(f"\nRUN_MODE invalido: '{RUN_MODE}'. Use 'sanity' ou 'full'.")

@@ -38,20 +38,70 @@ Crie um arquivo `.env` na raiz do projeto com as chaves:
 OPENROUTER_API_KEY=...        # fallback genérico
 MINIMAX_API_KEY=...           # minimax/minimax-m3
 MODEL2_API_KEY=...            # deepseek/deepseek-v4-flash
-MODEL3_API_KEY=...            # tencent/hy3-preview
+# MODEL3_API_KEY=...          # tencent/hy3-preview — desabilitado (ver problema #4)
+MIMO_API_KEY=...              # xiaomi/mimo-v2.5
 ```
 
 ---
 
 ## Modelos configurados
 
-Todos via OpenRouter com `reasoning: true`:
+Todos via OpenRouter. Workers = número de snippets em paralelo por modelo.
 
-| Nome | Model ID | Chave |
+| Nome | Model ID | Chave | Workers |
+|---|---|---|---|
+| `minimax-m3` | `minimax/minimax-m3` | `MINIMAX_API_KEY` | 5 |
+| `deepseek-v4-flash` | `deepseek/deepseek-v4-flash` | `MODEL2_API_KEY` | 5 |
+| `mimo-v2.5` | `xiaomi/mimo-v2.5` | `MIMO_API_KEY` | 15 |
+| `qwen3.7-max` | `qwen/qwen3.7-max` | `MODEL4_API_KEY` | 15 |
+| `llama-4-maverick` | `meta-llama/llama-4-maverick` | `MODEL6_API_KEY` | 5 |
+| `nemotron-ultra-550b` | `nvidia/nemotron-3-ultra-550b-a55b:free` | `MODEL5_API_KEY` | 5 |
+| ~~`tencent-hy3-preview`~~ | ~~`tencent/hy3-preview`~~ | desabilitado — ver problema #4 | — |
+
+---
+
+## Modelos candidatos para próximas execuções
+
+Três candidatos recomendados para expandir o benchmark, cobrindo hipóteses distintas:
+
+| Modelo | Empresa | ID OpenRouter | Reasoning | Workers | Status |
+|---|---|---|---|---|---|
+| **Qwen3.7-Max** | Alibaba | `qwen/qwen3.7-max` | Sim | 15 | Adicionado ao `run.py` — aguarda chave `MODEL4_API_KEY` |
+| **Qwen2.5-Coder 32B** | Alibaba | `qwen/qwen-2.5-coder-32b-instruct` | Não | 5 | Comentado em `run.py` — chave `MODEL7_API_KEY` pronta, habilitar quando necessário |
+| **Llama 4 Maverick** | Meta | `meta-llama/llama-4-maverick` | Não | 5 | Adicionado ao `run.py` — chave `MODEL6_API_KEY` |
+
+**Critério de seleção:** Qwen3.7-Max e Qwen2.5-Coder 32B estão no topo da lista de modelos open source por popularidade no OpenRouter e são especializados em código — diretamente relevante para análise forense de autoria.
+
+**Por que esses três:**
+
+- **Qwen3.7-Max** — flagship da série Qwen3.7, otimizado para coding e workloads agentic. Selecionado por popularidade no OpenRouter (open models) e especialização em código. `workers=15` pelo perfil de latência esperado similar ao mimo.
+
+- **Qwen2.5-Coder 32B** — modelo de código da geração anterior, sem reasoning. Testa se especialização em código supera modelos gerais nesta tarefa, e serve como controle para a hipótese de reasoning.
+
+- **Llama 4 Maverick** — Meta, empresa ocidental, sem reasoning. Diversifica a origem dos modelos (os 4 ativos são todos chineses) e serve como controle: se Maverick sem reasoning performa próximo de modelos com reasoning, o overhead de latência não se justifica.
+
+**Comparações que o conjunto completo permite:**
+
+| Comparação | Modelos |
+|---|---|
+| Reasoning vs sem reasoning | minimax / deepseek / mimo / qwen3.7 / nemotron vs **Maverick** / Qwen2.5-Coder |
+| Especializado em código vs generalista | minimax / deepseek / mimo / **Maverick** vs Qwen3.7-Max / Qwen2.5-Coder / Nemotron |
+| Escala (params ativos) | deepseek (~7B) → **Maverick** (17B) → Qwen2.5-Coder (32B) → Nemotron (55B / 550B total) |
+| Origem geográfica | modelos chineses vs **Maverick** (Meta/US) / Nemotron (NVIDIA/US) |
+| Arquitetura | Transformer denso vs MoE: **Maverick** (128 experts) / Nemotron (Transformer-Mamba) |
+
+---
+
+## Modelos avaliados e descartados
+
+Modelos considerados durante a seleção mas não adicionados ao benchmark, com justificativa.
+
+| Modelo | ID | Motivo da rejeição |
 |---|---|---|
-| `minimax-m3` | `minimax/minimax-m3` | `MINIMAX_API_KEY` |
-| `deepseek-v4-flash` | `deepseek/deepseek-v4-flash` | `MODEL2_API_KEY` |
-| `tencent-hy3-preview` | `tencent/hy3-preview` | `MODEL3_API_KEY` |
+| **Llama Nemotron Rerank VL 1B V2** | `nvidia/llama-nemotron-rerank-vl-1b-v2` | Tipo errado: é um *reranker* para pipelines RAG (scores de relevância query↔documento), não um modelo de chat/instrução. Não gera JSON de classificação nem explicações. 1.7B params — insuficiente para raciocínio forense. |
+| **Qwen3 235B** | `qwen/qwen3-235b-a22b` | Substituído pelo Qwen3.7-Max: mesma família Alibaba, mas o 3.7-Max é otimizado especificamente para coding e workloads agentic, além de estar mais alto na lista de popularidade open do OpenRouter. Manter os dois seria redundante. |
+| **GLM 5.2** | `z-ai/glm-5.2` | Perfil redundante com os modelos já configurados: seria o 5º modelo chinês com reasoning focado em código. Os slots restantes foram priorizados para hipóteses diferentes (Maverick sem reasoning, Qwen2.5-Coder sem reasoning). |
+| **Nemotron Ultra 550B** | `nvidia/nemotron-3-ultra-550b-a55b:free` | Instabilidade grave na rodada 1 (2026-06-18): ConnectionResetError em série após 6h de execução sem concluir os 200 snippets. Os 5 outros modelos já haviam finalizado. Comportamento idêntico ao tencent/hy3-preview (ver problema #4). Tier `:free` parece ser o fator determinante — endpoints gratuitos do OpenRouter derrubam conexões longas com reasoning. Dados de comparação: latências de 400–600s/snippet nos outros modelos na mesma rodada (instabilidade de rede geral) vs 2.4s do llama-4-maverick sem reasoning — reforça que o tier free + reasoning é inviável para benchmarks longos. Adicionado a `SKIP_MODELS` em run.py. |
 
 ---
 
@@ -87,11 +137,20 @@ Controlados pela variável `RUN_MODE` no topo do arquivo:
 
 ```
 python run.py
-  ├── Thread 1 → minimax-m3         ─┐
-  ├── Thread 2 → deepseek-v4-flash  ├── 3 modelos em paralelo
-  └── Thread 3 → tencent-hy3        ─┘
-       └── até 5 workers internos por modelo (snippets em paralelo)
+  ├── Thread 1 → minimax-m3              ─┐
+  ├── Thread 2 → deepseek-v4-flash       │
+  ├── Thread 3 → mimo-v2.5               ├── 6 modelos em paralelo
+  ├── Thread 4 → qwen3.7-max             │
+  ├── Thread 5 → llama-4-maverick        │
+  └── Thread 6 → nemotron-ultra-550b     ─┘
+       └── workers internos por modelo (snippets em paralelo):
+             minimax-m3, deepseek-v4-flash  → 5 (MAX_WORKERS global)
+             mimo-v2.5, qwen3.7-max         → 15 (override — reasoning lento)
+             llama-4-maverick               → 5 (sem reasoning, rápido)
+             nemotron-ultra-550b            → 5 (tier :free, rpm=20)
 ```
+
+Cada modelo pode sobrescrever o padrão global com o campo `"workers"` na sua config. Modelos com alta latência de reasoning se beneficiam de mais workers já que a taxa real de requisições fica bem abaixo do limite de RPM (mimo: ~0.06 req/s com 5 workers, limite é 60 RPM = 1 req/s).
 
 ### Proteções automáticas
 - **Rate limit (429):** backoff exponencial, até 3 retentativas (15s → 30s → 60s)
@@ -229,3 +288,123 @@ if not content.strip() and use_reasoning:
 ```
 
 **Resultado final (sanity):** minimax 5/5, deepseek 5/5, tencent 5/5 (com retry).
+
+---
+
+### 4. `tencent/hy3-preview` instável na execução full (200 snippets)
+
+**Problema:** Na primeira execução full (2026-06-17), o tencent apresentou duas falhas distintas:
+
+**4a. `ConnectionResetError(10054)`**
+
+O servidor do endpoint derrubava a conexão no meio da requisição, provavelmente porque respostas longas com reasoning (até 4000+ tokens) excediam o timeout ou a estabilidade do endpoint. Resultado: rajadas de `connection reset` simultâneas em múltiplos workers.
+
+```
+[tencent-hy3-preview] Erro de rede — aguardando 10s...
+[tencent-hy3-preview] id=63: ("Connection broken: ConnectionResetError(10054...)")
+[tencent-hy3-preview] id=62: ("Connection broken: ConnectionResetError(10054...)")
+```
+
+O retry automático de rede (até 5x, 10s de espera) absorveu parte dos erros, mas alguns snippets foram registrados como `api_error`.
+
+**4b. `KeyError: 'choices'`**
+
+Em alguns snippets, a API retornou HTTP 200 com corpo de erro (`{"error": {...}}`), em vez da estrutura padrão `{"choices": [...]}`. O `raise_for_status()` não detecta esse caso — o código travava com `KeyError: 'choices'` e o snippet era perdido.
+
+```
+[tencent-hy3-preview] id=92: 'choices'
+```
+
+**Resultado da execução full:** tencent ainda em andamento / degradado; minimax `194/200 válidos`, deepseek `198/200 válidos`.
+
+**Alternativas testadas/consideradas:**
+
+| Modelo | ID OpenRouter | Reasoning | Observação |
+|---|---|---|---|
+| `qwen/qwen3-235b-a22b` | `qwen/qwen3-235b-a22b` | Sim | Substituto direto; endpoint estável |
+| `moonshotai/kimi-k2` | `moonshotai/kimi-k2` | Sim | Forte em análise de código |
+| `meta-llama/llama-4-maverick` | `meta-llama/llama-4-maverick` | Não | Alta velocidade e confiabilidade |
+| `mistralai/mistral-large` | `mistralai/mistral-large` | Não | Estável, sem surpresas de formato |
+
+**Recomendação:** substituir `tencent/hy3-preview` por `qwen/qwen3-235b-a22b` na próxima execução — mesma chave `MODEL3_API_KEY`, suporta `reasoning: true`, e o endpoint do OpenRouter se mostrou consistente em testes.
+
+---
+
+### 5. `mimo-v2.5` — latência alta por reasoning extenso
+
+**Contexto:** `xiaomi/mimo-v2.5` foi adicionado como substituto do tencent (2026-06-18). No sanity de 5 snippets, a API funcionou sem erros (5/5 válidos), mas a latência foi ~84s/snippet em média (mín 12s, máx 158s), contra ~14s dos outros modelos. O reasoning estendido consome o orçamento de tokens antes de produzir a resposta.
+
+**Impacto no full (200 snippets):** com o padrão de 5 workers, o mimo levaria ~56 min — 4–5x mais que os outros modelos.
+
+**Solução:** override de workers por modelo. O campo `"workers"` na config do modelo sobrescreve `MAX_WORKERS`:
+
+```python
+"mimo-v2.5": {
+    ...
+    "workers": 15,
+}
+```
+
+Com 15 workers e ~84s/request, a taxa efetiva é ~0.18 req/s (10.7 RPM) — dentro do limite de 60 RPM. Tempo estimado para 200 snippets cai de ~56 min para **~18 min**.
+
+**Cálculo:** `200 snippets × 84s ÷ 15 workers ≈ 1120s ≈ 18 min`
+
+---
+
+## Execução full — estado atual (2026-06-18)
+
+### Rodadas concluídas
+
+| Modelo | Rodadas | Amostras acumuladas | Válidas | Taxa válidas |
+|---|---|---|---|---|
+| `llama-4-maverick` | 2 | 400 | 398 | 99.5% |
+| `deepseek-v4-flash` | 2 | 400 | 391 | 97.8% |
+| `qwen3.7-max` | 2 | 400 | 384 | 96.0% |
+| `minimax-m3` | 2 | 400 | 381 | 95.3% |
+| `mimo-v2.5` | 2 | 400 | 381 | 95.3% |
+| `nemotron-ultra-550b` | 0 | — | — | descartado (ver seção de modelos descartados) |
+
+**Última atualização: 2026-06-18 ~17h**
+
+| Modelo | Rodadas concluídas | Amostras | Válidas | Taxa |
+|---|---|---|---|---|
+| `llama-4-maverick` | 3/5 | 600 | 597 | 99.5% |
+| `deepseek-v4-flash` | 3/5 | 600 | 590 | 98.3% |
+| `qwen3.7-max` | 3/5 | 600 | 584 | 97.3% |
+| `mimo-v2.5` | 3/5 | 600 | 581 | 96.8% |
+| `minimax-m3` | 2/5 + R3 em andamento | 400 | 381 | 95.2% |
+| `nemotron-ultra-550b` | 0 | — | — | descartado |
+
+Runner ativo, rodadas 4 e 5 pendentes. Nenhum modelo excluído (todos acima de 80% de válidos).
+
+**Nota sobre a rodada 1:** latências anormalmente altas (deepseek 334s/snippet, qwen3.7 448s/snippet, minimax 588s/snippet) indicam instabilidade de rede geral no período 08h–15h. As rodadas 2 e 3 voltaram ao normal (deepseek ~8-9s, qwen3.7 ~24s, mimo ~22s), confirmando que os dados da rodada 1 são válidos mas ruidosos em `elapsed_s` — predições e conteúdo não foram afetados. Minimax apresenta erros de rede recorrentes mesmo nas rodadas normais, mas o retry automático absorve e completa os 200 snippets.
+
+---
+
+## Achados do primeiro sanity com minimax + deepseek + mimo (2026-06-18)
+
+Sanity de 5 snippets (seed fixo), gerado por `report.py --sanity`.
+
+### Métricas
+
+| Modelo | Acc | Conf. média | TP | FP | TN | FN | Latência média |
+|---|---|---|---|---|---|---|---|
+| `minimax-m3` | 0.60 | 7.8 | 0 | 0 | 3 | 2 | 13.9s |
+| `deepseek-v4-flash` | 0.20 | 7.4 | 0 | 2 | 1 | 2 | 14.2s |
+| `mimo-v2.5` | 0.40 | 7.6 | 0 | 1 | 2 | 2 | 84.0s |
+
+> Acc em 5 amostras não é estatisticamente significativa — serve apenas para verificar funcionamento e identificar padrões de erro.
+
+### Padrão de erro comum — dois snippets enganaram os 3 modelos
+
+**Snippet #0 (AI, Python) — falso negativo universal:**
+O código contém `# version 1.2.0` no topo. Os 3 modelos classificaram como `human` com confiança 8, citando a anotação de versão como fingerprint humano. O snippet é AI-gerado com uma anotação típica de projeto — ponto cego compartilhado.
+
+**Snippet #2 (AI, C) — falso negativo universal:**
+O código tem um bug de sintaxe real (parêntese desbalanceado no operador ternário) e nomes de variáveis crípticos. Os 3 modelos interpretaram o bug como evidência de autoria humana. Código AI pode conter bugs; a presença de erro sintático não é fingerprint humano confiável.
+
+### Diferenças entre modelos
+
+- **minimax-m3** — mais conservador: não gerou nenhum falso positivo, errou apenas os 2 snippets AI difíceis. Explicações mais detalhadas e contextualmente ricas.
+- **deepseek-v4-flash** — mais agressivo ao classificar como AI: 2 falsos positivos (snippets humanos classificados como AI). Explicações mais rasas, menor qualidade de raciocínio visível.
+- **mimo-v2.5** — comportamento intermediário: 1 falso positivo, explicações comparáveis ao minimax em profundidade, mas latência ~6x maior por reasoning extenso.
