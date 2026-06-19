@@ -6,6 +6,24 @@
 
 ---
 
+## Resumo dos Achados
+
+**Distribuicao dos 523 erros:**
+- **FN (AI classificado como human):** 448 casos — em apenas **4 casos** os outros 4 modelos acertaram quando o qwen errou. Em 185 casos (41%), nenhum modelo acertou.
+- **FP (humano classificado como AI):** 75 casos — em apenas **1 caso** os outros 4 acertaram. Em 30 casos (40%), nenhum modelo acertou.
+
+**Padroes de erro identificados:**
+- FP mais comum (~60%): codigo humano limpo/minimalista — qwen aplica o default "sem fingerprint = AI" quando nao encontra marcas de autoria
+- FN mais comum (~35%): AI com import morto ou artefato deliberado imitando humanos — o dataset H-AIRosettaMP inclui AI que replica fingerprints humanos propositalmente
+
+**Quando os outros modelos acertam e o qwen erra:**
+- FN exclusivos do qwen (4/4 outros corretos): apenas **4 casos em 448** — qwen e enganado por AI que usa padroes especificos como spacing, alinhamento manual e nomes contextualmente ricos
+- FP exclusivo do qwen (4/4 outros corretos): **1 caso em 75** — codigo C com comentarios placeholder que qwen interpretou como AI pedagogico
+
+**Conclusao:** qwen erra principalmente junto com os outros modelos — seus erros exclusivos representam menos de 1% do total. Isso indica que o problema e sistematico ao metodo zero-shot e ao dataset, nao especifico ao qwen. Seus erros unicos mostram que ele interpreta os fingerprints do prompt com mais literalidade: qualquer ausencia de marca humana vira AI, qualquer marca humana vira human, mesmo quando artificiais.
+
+---
+
 ## Visao Geral dos Erros
 
 | Tipo | Total | 4/4 outros acertaram | 3/4 acertaram | Ninguem acertou |
